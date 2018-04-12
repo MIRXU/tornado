@@ -10,6 +10,8 @@ from admin.views import Tag_EditHandler as admin_tag_edit
 from admin.views import Art_ListHandler as admin_art_list
 from admin.views import Art_EditHandler as admin_art_edit
 from admin.views import LogoutHandler as admin_logout
+from admin.views import  TagdelHandler as admin_tagdel
+from admin.views import  UploadHandler as admin_upload
 
 urls=[
     (r'/',home_index),
@@ -22,4 +24,6 @@ urls=[
     (r'/art_list\.html',admin_art_list),
     (r'/art_edit\.html',admin_art_edit),
     (r'/logout\.html',admin_logout),
+    (r'/tagdel\.html',admin_tagdel),
+    (r'/upload',admin_upload),
 ]

@@ -28,11 +28,11 @@ engine=create_engine(
         options.db_name,
 
     ),
-    # encoding='utf-8',
-    # eche=False,
-    # pool_size=100,
-    # pool_recycle=7200,
-    # connect_args={'charset':'utf8'}
+    encoding='utf-8',
+    echo=False,
+    pool_size=100,
+    pool_recycle=7200,
+    connect_args={'charset': 'utf8'}
 )
 class CustomApplication(tornado.web.Application):
    def __init__(self,cofig,urls):

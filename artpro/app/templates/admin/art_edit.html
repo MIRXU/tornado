@@ -40,7 +40,9 @@
                                 <td>标签</td>
                                 <td>
                                     <select class="form-control" id="input_tag">
-                                        <option>--请选择标签--</option>
+                                        {% for v in data %}
+                                            <option>{{v[1]}}</option>
+                                        {% end %}
                                     </select>
                                 </td>
                                 <td id="error_tag"></td>
@@ -78,5 +80,23 @@
 		initialFrameWidth: "100%",
 		initialFrameHeight: "300",
 	});
+	$(document).ready(function () {
+        $('#btn-sub').click(function () {
+            var title=$('#input_title').val();
+            var info=$('#input_info').val();
+            var content=$('#input_content').val();
+            var img=$('#input_img').val();
+            var data={"title":title,"info":info,"content":content,"img":img};
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success:function (re) {
+                    
+                }
+            })
+        });
+    })
 </script>
 {% end %}
