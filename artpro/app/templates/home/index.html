@@ -11,15 +11,9 @@
                     <tr>
                         <td style="width:10%;">文章标签</td>
                         <td style="width:90%;">
-                            <a class="label label-info"><span class="glyphicon glyphicon-tag"></span>&nbsp;标签一</a>
-                            &nbsp;
-                            <a class="label label-info"><span class="glyphicon glyphicon-tag"></span>&nbsp;标签一</a>
-                            &nbsp;
-                            <a class="label label-info"><span class="glyphicon glyphicon-tag"></span>&nbsp;标签一</a>
-                            &nbsp;
-                            <a class="label label-info"><span class="glyphicon glyphicon-tag"></span>&nbsp;标签一</a>
-                            &nbsp;
-                            <a class="label label-info"><span class="glyphicon glyphicon-tag"></span>&nbsp;标签一</a>
+                            {% for  v in arr['tags'] %}
+                            <a class="label label-info" href="{{arr['url']}}?t={{v[0]}}"><span class="glyphicon glyphicon-tag"></span>&nbsp;{{v[1]}}</a>&nbsp;
+                            {% end %}
                     </tr>
                 </table>
             </div>

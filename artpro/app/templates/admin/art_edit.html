@@ -3,17 +3,67 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h3 class="page-header">文章管理/编辑文章</h3>
+                <h3 class="page-header">文章管理/{% if id!=None %}修改{% else %}编辑{% end %}文章</h3>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        编辑文章
+                        {% if id!=None %}修改{% else %}编辑{% end %}文章
                     </div>
                     <div class="panel-body">
                         <table class="table table-bordered">
+                            {% if id!=None %}
+                              <tr>
+                                <td style="width:10%">标题</td>
+                                <td>
+                                    <input type="text" class="form-control" id="input_title" value="{{art[1]}}">
+                                </td>
+                                <td id="error_title" style="width:30%"></td>
+                            </tr>
+                            <tr>
+                                <td>简介</td>
+                                <td>
+                                    <textarea id="input_info" rows=10 class="form-control">{{art[2]}}</textarea>
+                                </td>
+                                <td id="error_info"></td>
+                            </tr>
+                            <tr>
+                                <td>封面</td>
+                                <td>
+                                    <input type="file" id="upload_img">
+                                    <img src="/static/uploads/{{art[5]}}" style="height: 166px" class="pull-left" id="show_img">
+                                    <input type="hidden" id="input_img" value="{{art[5]}}" >
+                                    <button class="btn btn-primary" id="btn_upload">上传图片</button>
+                                </td>
+                                <td id="error_img"></td>
+                            </tr>
+                            <tr>
+                                <td>标签</td>
+                                <td>
+                                    <select class="form-control" id="input_tag">
+                                        <option value="0">--请选择标签--</option>
+                                        {% for v in data %}
+                                            {% if v[0]==art[4 ]%}
+                                                <option value="{{v[0]}}" selected>{{v[1]}}</option>
+                                            {% else %}
+                                                <option value="{{v[0]}}">{{v[1]}}</option>
+                                            {% end %}
+                                        {% end %}
+
+                                    </select>
+                                </td>
+                                <td id="error_tag"></td>
+                            </tr>
+                            <tr>
+                                <td>内容</td>
+                                <td>
+                                    <textarea id="input_content">{{art[3]}}</textarea>
+                                </td>
+                                <td id="error_content"></td>
+                            </tr>
+                            {% else %}
                             <tr>
                                 <td style="width:10%">标题</td>
                                 <td>
@@ -31,8 +81,10 @@
                             <tr>
                                 <td>封面</td>
                                 <td>
-                                    <input type="file" id="input_img">
-                                    <img src="holder.js/262x166" class="pull-left">
+                                    <input type="file" id="upload_img">
+                                    <img src="holder.js/262x166" style="height: 166px" class="pull-left" id="show_img">
+                                    <input type="hidden" id="input_img">
+                                    <button class="btn btn-primary" id="btn_upload">上传图片</button>
                                 </td>
                                 <td id="error_img"></td>
                             </tr>
@@ -40,8 +92,9 @@
                                 <td>标签</td>
                                 <td>
                                     <select class="form-control" id="input_tag">
+                                        <option value="0">--请选择标签--</option>
                                         {% for v in data %}
-                                            <option>{{v[1]}}</option>
+                                            <option value="{{v[0]}}">{{v[1]}}</option>
                                         {% end %}
                                     </select>
                                 </td>
@@ -54,11 +107,17 @@
                                 </td>
                                 <td id="error_content"></td>
                             </tr>
+                             {% end %}
                             <tr>
                                 <td colspan="3">
+                                    {% if id!=None %}
+                                    <input type="hidden" id="input_id" value="{{art[0]}}">
+                                    {% else %}
+                                    <input type="hidden" id="input_id" value="0">
+                                    {% end %}
                                     <a class="btn btn-success pull-left" id="btn-sub">
                                         <span class="glyphicon glyphicon-edit"></span>
-                                        编辑
+                                        {% if id!=None %}修改{% else %}编辑{% end %}
                                     </a>
                                 </td>
                             </tr>
@@ -81,19 +140,62 @@
 		initialFrameHeight: "300",
 	});
 	$(document).ready(function () {
+	    var img;
+	     function getCookie(name) {
+            var r=document.cookie.match('\\b'+name+'=([^;]*)\\b');
+            return r?r[1]:undefined;
+        }
+	    $('#btn_upload').click(function () {
+            var img=$('#upload_img')[0].files[0];
+            var formData=new FormData();
+            formData.append('img',img);
+            $.ajax({
+                url:'/upload',
+                type:'POST',
+                dataType:'json',
+                cache:false,
+                contentType:false,
+                processData:false,
+                data:formData,
+                success:function (re) {
+                    if(re.ok==1){
+                        $('#show_img').attr('src','static/uploads/'+re.img)
+                        img=re.img;
+                        $('#input_img').attr('value',img)
+                    }
+                }
+            });
+        });
         $('#btn-sub').click(function () {
             var title=$('#input_title').val();
             var info=$('#input_info').val();
-            var content=$('#input_content').val();
+            var content=UE.getEditor('input_content').getContent();
+            var tag=$('#input_tag').val();
             var img=$('#input_img').val();
-            var data={"title":title,"info":info,"content":content,"img":img};
+            var _xsrf=getCookie('_xsrf');
+            var id=$('#input_id').val();
+            var data={"title":title,"info":info,"content":content,'tag':tag,'img':img,'_xsrf':_xsrf,'id':id};
             $.ajax({
-                url: '/upload',
+                url: '/art_edit.html',
                 type: 'POST',
                 data: data,
                 dataType: 'json',
                 success:function (re) {
-                    
+                     if(re.ok==1){
+                            location.href='/art_list.html';
+                        }else {
+                            var fields=['title','info','content','tag','img'];
+                            for(v in  fields){
+                                if (typeof(re[fields[v]])!=='undefined'){
+                                    $('#error_'+fields[v]).empty();
+                                    $('#error_'+fields[v]).append("<font style='color:red'>"+re[fields[v]]+"</font>");
+
+                                }else{
+                                    $('#error_'+fields[v]).empty();
+                                }
+                            }
+                        }
+
                 }
             })
         });
