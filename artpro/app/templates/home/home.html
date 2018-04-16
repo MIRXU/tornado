@@ -43,9 +43,9 @@
         <div class="navbar-collapse collapse">
             <form class="navbar-form navbar-left" role="search" style="margin-top:18px;">
                 <div class="form-group input-group">
-                    <input type="text" class="form-control" placeholder="请输入文章信息！">
+                    <input type="text" class="form-control" placeholder="请输入文章信息！" id="key">
                     <span class="input-group-btn">
-                        <a class="btn btn-default" href="search.html"><span class="glyphicon glyphicon-search"></span>&nbsp;搜索</a>
+                        <a id="btn-search" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>&nbsp;搜索</a>
                     </span>
                 </div>
             </form>
@@ -93,8 +93,13 @@
             effect: "fadeIn"
         });
     });
-
+    $('#btn-search').click(function () {
+        key=$('#key').val()
+        location.href='search.html?key='+key;
+    })
 
 </script>
+{%block js%}
+{% end %}
 </body>
 </html>
